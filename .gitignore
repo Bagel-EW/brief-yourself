@@ -1,0 +1,19 @@
+# Local/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Runtime/cache material
+__pycache__/
+*.py[cod]
+.workbuddy/
+test-runs/
+private/
+temp/
+tmp/
+
+# Local secrets
+.env
+.env.*
+!.env.example

@@ -1,0 +1,11 @@
+{
+  "schema_version": "0.3",
+  "patch_id": "patch-001",
+  "parent_profile_id": "user-controlled-id",
+  "parent_revision": 1,
+  "source_task": "",
+  "created_at": "",
+  "status": "pending",
+  "proposals": [],
+  "task_strategies_not_for_merge": []
+}
