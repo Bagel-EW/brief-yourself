@@ -143,26 +143,61 @@ Turn new observations from this task into a Pending Context Patch. Let me review
 
 ## Local commands
 
+Run these commands inside `skills/brief-yourself/`, or use absolute paths. Entries with `--help` only print usage and read or write nothing.
+
+### Store lifecycle
+
 ```bash
 python scripts/context_store.py --help
 python scripts/context_store.py init --help
 python scripts/context_store.py validate --store <store>
-python scripts/context_store.py create-view --help
-python scripts/context_store.py stage-patch --help
-python scripts/context_store.py apply-patch --help
+python scripts/context_store.py inspect --store <store>
+python scripts/context_store.py list-patches --help
 ```
 
-Run these commands inside `skills/brief-yourself/`, or use absolute paths.
+### Source registration
+
+`register-source` is the only entry that writes an Evidence Source, and `consent` must be `explicit`.
+
+```bash
+python scripts/context_store.py register-source --help
+```
+
+### View
+
+```bash
+python scripts/context_store.py create-view --help
+python scripts/context_store.py validate-view --help
+```
+
+### Patch
+
+```bash
+python scripts/context_store.py stage-patch --help
+python scripts/context_store.py apply-patch --help
+python scripts/context_store.py reject-patch --help
+python scripts/context_store.py derive-core-summary --help
+```
+
+### Export and deletion
+
+```bash
+python scripts/context_store.py export --help
+python scripts/context_store.py purge-plan --help   # preview only, zero writes
+python scripts/context_store.py purge --help        # requires a preceding plan-token
+```
+
+`purge` deliberately ships no copy-paste runnable example. It requires a `--plan-token` from the immediately preceding `purge-plan`, plus both `--approve` and `--confirmed-by`. Any change to the Store after the preview invalidates the token, so `purge-plan` must be run again.
 
 ## Privacy and governance
 
-- Show source consent information before reading history, projects, resumes, Obsidian, or Harness Memory;
+- Show source consent information before reading history, projects, resumes, Obsidian, or Harness Memory (`register-source`);
 - History-assisted sessions retrieve the minimum necessary scope and never scan all Memory by default;
 - Historical content and agent inference remain candidate evidence;
-- `private` and `restricted` content is excluded by default; a boundary mismatch fails closed;
-- Long-term write-back requires explicit approval of the concrete Patch; Core Summary is derived only from eligible confirmed Claims and cannot be promoted directly;
+- `private` and `restricted` content is excluded by default; a boundary mismatch fails closed (`validate-view`);
+- Long-term write-back requires explicit approval of the concrete Patch; Core Summary is derived only from eligible confirmed Claims and cannot be promoted directly (`stage-patch` → `apply-patch` → `derive-core-summary`);
 - Preserve counterevidence, tensions, change, and unknowns instead of compressing the user into a neat persona;
-- Let the user inspect, export, restrict, correct, reject, retire, or request deletion of controlled copies.
+- Let the user inspect (`inspect`), export (`export`), restrict (`validate-view`), correct (`apply-patch`), reject (`reject-patch`), retire (`apply-patch`), or request deletion (`purge-plan` → `purge`) of controlled copies.
 
 The repository and package contain no real Personal Context, private Store, conversation history, resume, or local machine path. See [Privacy](docs/PRIVACY.md) and [Governance](docs/GOVERNANCE.en.md).
 

@@ -141,26 +141,61 @@ npx skills add https://github.com/Bagel-EW/brief-yourself --skill brief-yourself
 
 ## 本地命令
 
+请在 `skills/brief-yourself/` 内运行这些命令，或使用对应的绝对路径。带 `--help` 的条目只查看用法，不读写任何数据。
+
+### Store 生命周期
+
 ```bash
 python scripts/context_store.py --help
 python scripts/context_store.py init --help
 python scripts/context_store.py validate --store <store>
-python scripts/context_store.py create-view --help
-python scripts/context_store.py stage-patch --help
-python scripts/context_store.py apply-patch --help
+python scripts/context_store.py inspect --store <store>
+python scripts/context_store.py list-patches --help
 ```
 
-请在 `skills/brief-yourself/` 内运行这些命令，或使用对应的绝对路径。
+### 来源登记
+
+`register-source` 是唯一写入 Evidence Source 的入口，`consent` 必须为 `explicit`。
+
+```bash
+python scripts/context_store.py register-source --help
+```
+
+### View
+
+```bash
+python scripts/context_store.py create-view --help
+python scripts/context_store.py validate-view --help
+```
+
+### Patch
+
+```bash
+python scripts/context_store.py stage-patch --help
+python scripts/context_store.py apply-patch --help
+python scripts/context_store.py reject-patch --help
+python scripts/context_store.py derive-core-summary --help
+```
+
+### 导出与删除
+
+```bash
+python scripts/context_store.py export --help
+python scripts/context_store.py purge-plan --help   # 只预览，零写入
+python scripts/context_store.py purge --help        # 需前置 plan-token，见下
+```
+
+`purge` 不提供可直接复制执行的示例。它要求 `--plan-token` 来自紧邻前一次的 `purge-plan`，并同时需要 `--approve` 与 `--confirmed-by`。Store 在预览之后发生任何变化都会使 token 失效，需要重新 `purge-plan`。
 
 ## 隐私与治理
 
-- 读取历史、项目、简历、Obsidian 或 Harness Memory 前，先展示来源授权信息；
+- 读取历史、项目、简历、Obsidian 或 Harness Memory 前，先展示来源授权信息（`register-source`）；
 - History-assisted 只读取当前任务的最小必要范围，不默认扫描全部 Memory；
 - 历史内容和 Agent 推断只能成为候选 evidence；
-- `private` / `restricted` 默认排除，边界不匹配时 fail closed；
-- 长期写回必须由用户审核具体 Patch 后明确批准；Core Summary 只从符合条件的已确认 Claim 派生，不接受直接晋升；
+- `private` / `restricted` 默认排除，边界不匹配时 fail closed（`validate-view`）；
+- 长期写回必须由用户审核具体 Patch 后明确批准；Core Summary 只从符合条件的已确认 Claim 派生，不接受直接晋升（`stage-patch` → `apply-patch` → `derive-core-summary`）；
 - 保留反例、矛盾、变化与未知，不把用户压缩成整齐人设；
-- 用户可以查看、导出、限制、修正、拒绝、退休或请求删除可控副本。
+- 用户可以查看（`inspect`）、导出（`export`）、限制（`validate-view`）、修正（`apply-patch`）、拒绝（`reject-patch`）、退休（`apply-patch`）或请求删除（`purge-plan` → `purge`）可控副本。
 
 仓库与发布包不包含真实 Personal Context、私密 Store、对话记录、简历或本机路径。详见 [隐私边界](docs/PRIVACY.md) 与 [治理原则](docs/GOVERNANCE.md)。
 
