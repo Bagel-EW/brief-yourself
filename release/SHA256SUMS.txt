@@ -1,3 +1,8 @@
-# SHA-256 and byte size for the Brief Yourself 1.0.0 public release
+# SHA-256 and byte size for the Brief Yourself public releases
+# Older artifacts are listed so previously published packages stay verifiable.
+
 # bytes: 94329
 877458D8A7D46CB891C85234D88BCC10A97777D2BD0B4BF6092058ECF92FA5FB  brief-yourself-1.0.0.zip
+
+# bytes: 77274
+92FF001226C8333095DD38BC16DEB143CD5E437C5213A9C4579FACC78B49C5DF  brief-yourself-1.0.1.zip

@@ -44,6 +44,8 @@ python scripts/context_store.py migrate-v02 \
 
 ## Register Source
 
+`register-source` 是 Evidence Source 的**写入入口，不是读取授权界面**。读取历史、项目、简历、Obsidian 或 Harness Memory 前的授权卡由 `source-consent-and-disclosure.md` 约束；只有在用户已授权读取、并且明确批准把该来源长期登记进 Store 后，才能运行本命令。
+
 长期 Claim 引用新 Evidence Source 前，先把单个、已审核的 Source JSON 登记到 Store：
 
 ```bash
@@ -54,7 +56,23 @@ python scripts/context_store.py register-source \
   --approve
 ```
 
-`source.json` 使用 `personal-context-contract.md` 的 Source Structure，并且 `consent` 必须为 `explicit`。命令会同时更新 `context.json` 与 `evidence/index.json`、备份旧 revision、递增 revision 并写入审计记录。缺少 `--approve` 时零写入；Source ID 在任一索引中已存在时拒绝覆盖。
+`source.json` 的字段以 `assets/schemas/personal-context-store-v0.4.schema.json` 的 `source` 定义为准：
+
+```json
+{
+  "id": "source-002",
+  "type": "conversation",
+  "title": "用户可识别的来源名称",
+  "locator": "system-or-user-managed-location",
+  "access_scope": "实际读取范围",
+  "collected_at": "ISO-8601",
+  "consent": "explicit",
+  "retention": "source-managed",
+  "sensitivity": "private"
+}
+```
+
+`consent` 固定为 `explicit`；`collected_at` 必须带时区。命令会同时更新 `context.json` 与 `evidence/index.json`、备份旧 revision、递增 revision 并写入审计记录。缺少 `--approve` 时零写入；Source ID 在任一索引中已存在时拒绝覆盖。
 
 ## Validate
 
