@@ -1,4 +1,6 @@
-# V0.3 → V0.4 迁移说明
+# V0.3 → V0.4 迁移说明｜Brief Yourself 1.0.1
+
+本文件只在 Brief Yourself 1.0.1 的历史迁移场景读取。这里的 `0.4` 是 internal schema compatibility id，不是产品版本。
 
 ## 结论
 

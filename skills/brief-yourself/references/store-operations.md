@@ -1,4 +1,6 @@
-# Store Operations
+# Store Operations｜Brief Yourself 1.0.1
+
+本文件是 Brief Yourself 1.0.1 的 runtime 操作手册，覆盖全部 14 个正式 V0.4 操作与 2 个迁移命令。internal schema compatibility id 仍为 `0.4`。参数以各命令的 `--help` 为最终依据。
 
 ## Directory Layout
 

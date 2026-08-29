@@ -29,12 +29,12 @@
 
 ### 自动门禁
 
-- 新增 `tests/test_v101_release_gates.py`（15 项）：runtime 注册名总数 17；14 个正式操作可被发现与分组路由；2 个迁移操作只在迁移路由；`list` 为兼容别名；每个 active reference 可达；3 份正式模板有明确入口；active 包无新旧双事实源；`purge` 示例带治理约束；Markdown 链接、UTF-8、Python 编译与隐私扫描通过。
-- 合成验收基线更新为 `110 tests / 0 failures`（原 95 项 + 新增 15 项门禁）。
+- 新增 `tests/test_v101_release_gates.py`（19 项）：runtime 注册名总数 17；14 个正式操作可被发现与分组路由；2 个迁移操作只在迁移路由；`list` 为兼容别名；每个 active reference 可达；3 份正式模板有明确入口；active 包无新旧双事实源；`purge` 示例带治理约束；Markdown 链接、UTF-8、Python 编译与隐私扫描通过。
+- 合成验收基线更新为 `114 tests / 0 failures`（原 95 项 + 新增 19 项门禁）。
 
 ### 制品
 
-- `release/brief-yourself-1.0.1.zip`：17 个文件，77,274 bytes，SHA-256 `92FF001226C8333095DD38BC16DEB143CD5E437C5213A9C4579FACC78B49C5DF`。
+- `release/brief-yourself-1.0.1.zip`：17 个文件，77,473 bytes，SHA-256 `987DD5629EF2C8317BD40342D62B6C2CEC2DC2A13F3E9BC33D34E35713F0BF52`。
 - `release/brief-yourself-1.0.0.zip` 原样保留（26 个文件，94,329 bytes，SHA-256 `877458D8A7D46CB891C85234D88BCC10A97777D2BD0B4BF6092058ECF92FA5FB`），两者哈希均记录在 `release/SHA256SUMS.txt`。
 
 ## 1.0.0 — Documentation revision · 2026-08-29

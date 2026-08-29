@@ -224,7 +224,7 @@ The repository and package contain no real Personal Context, private Store, conv
 
 ## Validation summary
 
-The `1.0.1` synthetic acceptance baseline is `110 tests / 0 failures` (including 15 release gate checks). The release package contains `17` canonical Skill files and is checked item by item against `skills/brief-yourself/`.
+The `1.0.1` synthetic acceptance baseline is `114 tests / 0 failures` (including 19 release gate checks). The release package contains `17` canonical Skill files and is checked item by item against `skills/brief-yourself/`.
 
 These numbers describe the validation scope; they are not a promise of absolute safety or production readiness.
 
@@ -234,7 +234,7 @@ These numbers describe the validation scope; they are not a promise of absolute 
 brief-yourself/
 ├─ skills/brief-yourself/   # canonical Skill
 ├─ docs/                    # architecture, privacy, governance, glossary
-├─ release/                 # 1.0.0 Skill ZIP and SHA-256
+├─ release/                 # 1.0.1 and 1.0.0 Skill ZIPs and SHA-256
 ├─ README.md                # Chinese entry
 ├─ README.en.md             # English entry
 ├─ SECURITY.md              # security reporting boundaries

@@ -1,8 +1,8 @@
-# Personal Context Model｜Brief Yourself 1.0.0
+# Personal Context Model｜Brief Yourself 1.0.1
 
 ## 定位
 
-Brief Yourself 1.0.0 的 `Personal Context Store` 是个人上下文的 canonical source，不是第二套 Harness Memory。它的 internal schema compatibility id 为 `0.4`；Store 只保存用户可审核的 Claim、Tension、Unknown、来源引用、披露权限和版本信息。Codex Memory、rollout、项目文档或其他 harness memory 不会自动进入 Store；即使用户授权读取，也只能先作为候选证据。
+Brief Yourself 1.0.1 的 `Personal Context Store` 是个人上下文的 canonical source，不是第二套 Harness Memory。它的 internal schema compatibility id 为 `0.4`；Store 只保存用户可审核的 Claim、Tension、Unknown、来源引用、披露权限和版本信息。Codex Memory、rollout、项目文档或其他 harness memory 不会自动进入 Store；即使用户授权读取，也只能先作为候选证据。
 
 Store 的顶层字段固定为：
 
@@ -12,7 +12,7 @@ claims, tensions, unknowns, sources, revision
 ```
 
 Store 不再物理保存 `core` 或 `domains`。`domains[]` 是 Claim 的标签；Core Summary 由运行时按条件派生，保留原 Claim ID，不写回 Store。
-`Tension` 与 `Unknown` 是与 Claim 并列的当前 1.0.0 canonical Store 顶层实体，也可作为完整冻结对象进入 View；它们不是永久 session-only。会话新发现的 Tension/Unknown 在当前协议下只能先作为“未持久化候选”交付，等待未来显式写入协议。
+`Tension` 与 `Unknown` 是与 Claim 并列的当前 1.0.1 canonical Store 顶层实体，也可作为完整冻结对象进入 View；它们不是永久 session-only。会话新发现的 Tension/Unknown 在当前协议下只能先作为“未持久化候选”交付，等待未来显式写入协议。
 
 ## Claim 与证据
 
@@ -48,7 +48,7 @@ Claim 必须保留 `kind`、`scope`、`durability`、`confidence`、`user_status
 
 若 Store 内存在 `brief.md`，它是由 Canonical Context 派生的受控副本，不是第二事实源。它会进入 purge manifest；purge 若改变 Canonical Context，必须用 purge 后的 Context 在同一事务中重生成，不能保留已删除 Claim 的 ID 或 statement。purge 在每次 replace/write/delete 前重新核对受控路径集合、字节 hash 和文件身份；审核窗口内发现并发新增、修改或删除时直接中止，并保留并发修改。
 
-V0.3 Store 仍可用 `validate`、`inspect` 查看，但不能直接 `export`，也不能被 1.0.0 当前 runtime 原地升级。`preview-migrate-v03` 只读读取 `context.json` 与 `evidence/index.json`，在内存生成候选并输出 metadata-only report；它不物化新 Store、不改写输入，也不读取旧 View/Patch。若预览失败，继续使用原 V0.3 Store；回滚不通过从 internal schema compatibility id `0.4` 的 Store 反向重建。
+V0.3 Store 仍可用 `validate`、`inspect` 查看，但不能直接 `export`，也不能被 1.0.1 当前 runtime 原地升级。`preview-migrate-v03` 只读读取 `context.json` 与 `evidence/index.json`，在内存生成候选并输出 metadata-only report；它不物化新 Store、不改写输入，也不读取旧 View/Patch。若预览失败，继续使用原 V0.3 Store；回滚不通过从 internal schema compatibility id `0.4` 的 Store 反向重建。
 
 V0.2 只能在副本上通过既有 `migrate-v02` 显式迁移到 V0.3，不能链式进入 internal schema compatibility id `0.4`。
 
@@ -69,4 +69,4 @@ Patch 是唯一长期回流路径。新写入只允许 `add`、`update`、`chall
 
 ## Harness 边界
 
-Personal Context 不自动同步到 Codex Memory，也不接管 rollout、thread、retrieval 或 consolidation。Adapter 只能把已冻结、带 revision/TTL/权限的 View 交给下游；任务完成后只能返回待审核 Patch。个人 Context 与未来 Organization Context 共用 envelope 的主体、执行者、受众、用途、版本和有效期字段，但 1.0.0 当前版本只实现 `subject.type = person`。
+Personal Context 不自动同步到 Codex Memory，也不接管 rollout、thread、retrieval 或 consolidation。Adapter 只能把已冻结、带 revision/TTL/权限的 View 交给下游；任务完成后只能返回待审核 Patch。个人 Context 与未来 Organization Context 共用 envelope 的主体、执行者、受众、用途、版本和有效期字段，但 1.0.1 当前版本只实现 `subject.type = person`。

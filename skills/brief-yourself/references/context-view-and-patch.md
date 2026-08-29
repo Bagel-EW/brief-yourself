@@ -1,6 +1,6 @@
-# Context View And Patch Protocol｜Brief Yourself 1.0.0
+# Context View And Patch Protocol｜Brief Yourself 1.0.1
 
-Brief Yourself 1.0.0 把 `Context View` 作为按目的编译的冻结 Context Envelope，把 `Context Patch` 作为唯一的长期回流入口。View 是任务输入，不是新的事实源；Patch 是候选变更，不是自动写回。
+Brief Yourself 1.0.1 把 `Context View` 作为按目的编译的冻结 Context Envelope，把 `Context Patch` 作为唯一的长期回流入口。View 是任务输入，不是新的事实源；Patch 是候选变更，不是自动写回。
 
 ## 1. Frozen Context Envelope
 
@@ -52,7 +52,7 @@ Envelope 中的 `subject.type` 固定为 `person`；`principal` 是实际执行�
 
 ## 3. Context Patch 结构
 
-Patch 必须符合 1.0.0 当前版本的 Envelope 约束，且只允许以下四种 Proposal action：`add`、`update`、`challenge`、`retire`。
+Patch 必须符合 1.0.1 当前版本的 Envelope 约束，且只允许以下四种 Proposal action：`add`、`update`、`challenge`、`retire`。
 
 ```json
 {
@@ -83,7 +83,7 @@ Patch 必须符合 1.0.0 当前版本的 Envelope 约束，且只允许以下四
 - `task_strategies_not_for_merge` 只保存本次任务策略、临时话术、JD 关键词或一次性 TODO 的隔离记录，不能并入长期 Claim。
 - 新 Patch 不能写 `target_layer`、`target_domain`、`promote` 或 `demote`。Core Summary 是由 Claim 派生的摘要，不需要物理晋升/降级。
 
-`Tension` 与 `Unknown` 仍是当前 1.0.0 canonical Store 的顶层实体，也可以作为完整冻结对象进入 View；它们不是永久 session-only。当前 Patch schema/runtime 的 Proposal 只支持 Claim 的 `add`、`update`、`challenge`、`retire`，本轮没有 Tension/Unknown 的新增或更新入口。会话中新发现的 Tension/Unknown 只能作为“未持久化候选”交付并等待未来显式协议；不得静默写入 Store、伪装成 Claim、塞入 `task_strategies_not_for_merge`，或声称已长期保存。已有迁移/Store 中的对象保持可读并可选入 View；未来写入口需要另行 schema/runtime/approval，本轮不实施。
+`Tension` 与 `Unknown` 仍是当前 1.0.1 canonical Store 的顶层实体，也可以作为完整冻结对象进入 View；它们不是永久 session-only。当前 Patch schema/runtime 的 Proposal 只支持 Claim 的 `add`、`update`、`challenge`、`retire`，本轮没有 Tension/Unknown 的新增或更新入口。会话中新发现的 Tension/Unknown 只能作为“未持久化候选”交付并等待未来显式协议；不得静默写入 Store、伪装成 Claim、塞入 `task_strategies_not_for_merge`，或声称已长期保存。已有迁移/Store 中的对象保持可读并可选入 View；未来写入口需要另行 schema/runtime/approval，本轮不实施。
 
 V0.3 遗留 Patch 中的 `promote`/`demote` 只能作为兼容读取、迁移报告或人工审查材料；它们不是当前版本的新写入 action。若旧操作需要表达为当前版本变更，由用户另行审核具体的 `add`/`update`/`challenge`/`retire` 组合。
 

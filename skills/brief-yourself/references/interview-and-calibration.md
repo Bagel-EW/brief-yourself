@@ -1,6 +1,6 @@
-# Interview And Calibration｜Brief Yourself 1.0.0
+# Interview And Calibration｜Brief Yourself 1.0.1
 
-本文件是 Brief Yourself 1.0.0 的访谈与校准入口。它把会话契约、预算、提问质量、阶段综合和 Claim 分类合并到一条流程中；不要用无上限的“继续聊聊”替代它。
+本文件是 Brief Yourself 1.0.1 的访谈与校准入口。它把会话契约、预算、提问质量、阶段综合和 Claim 分类合并到一条流程中；不要用无上限的“继续聊聊”替代它。
 
 ## 1. Session Contract
 
@@ -63,7 +63,7 @@ Contract 必须写清：
 
 ## 5. 候选 Claim 与层级
 
-1.0.0 当前 Store 只有一个扁平 `claims[]`；`domains[]` 是一个或多个领域标签，不是可单独写入的 Core/Domain 容器。新认识默认创建为 `user_status: unreviewed` 的候选 Claim，并优先带有相关 Domain 标签；单次会话、一次任务或单一 JD 不得让它成为已确认的长期认识。
+1.0.1 当前 Store 只有一个扁平 `claims[]`；`domains[]` 是一个或多个领域标签，不是可单独写入的 Core/Domain 容器。新认识默认创建为 `user_status: unreviewed` 的候选 Claim，并优先带有相关 Domain 标签；单次会话、一次任务或单一 JD 不得让它成为已确认的长期认识。
 
 `Core Summary` 是从已确认、仍为 active、具有跨场景支持且仍适用的 Claim 派生的可读摘要，不是新的 canonical 数据，不单独存储，也不应在 Patch 中写入 `promote` 或 `demote`。任何长期写回都必须先生成 pending Patch，再让用户审核具体 Proposal。
 

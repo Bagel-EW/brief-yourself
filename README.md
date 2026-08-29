@@ -222,7 +222,7 @@ python scripts/context_store.py preview-migrate-v03 --help
 
 ## 验证摘要
 
-`1.0.1` 的合成验收基线为 `110 tests / 0 failures`（含 15 项发布门禁检查）。发布包包含 `17` 个 canonical Skill 文件，并与 `skills/brief-yourself/` 逐项核对。
+`1.0.1` 的合成验收基线为 `114 tests / 0 failures`（含 19 项发布门禁检查）。发布包包含 `17` 个 canonical Skill 文件，并与 `skills/brief-yourself/` 逐项核对。
 
 这些数字说明检查范围，不构成绝对安全或生产环境保证。
 
@@ -232,7 +232,7 @@ python scripts/context_store.py preview-migrate-v03 --help
 brief-yourself/
 ├─ skills/brief-yourself/   # canonical Skill
 ├─ docs/                    # 架构、隐私、治理与术语
-├─ release/                 # 1.0.0 Skill ZIP 与 SHA-256
+├─ release/                 # 1.0.1 与 1.0.0 Skill ZIP 及 SHA-256
 ├─ README.md                # 中文入口
 ├─ README.en.md             # English entry
 ├─ SECURITY.md              # 安全反馈边界

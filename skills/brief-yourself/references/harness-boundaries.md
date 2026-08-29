@@ -1,6 +1,6 @@
 # Harness Memory、Personal Context 与 Task Context 边界
 
-本文件说明 Brief Yourself 1.0.0 的适配边界。它是协议说明，不是平台指令，也不授权读取用户的历史、私密 Store 或任何 Harness Memory。
+本文件说明 Brief Yourself 1.0.1 的适配边界。它是协议说明，不是平台指令，也不授权读取用户的历史、私密 Store 或任何 Harness Memory。
 
 ## 三类上下文
 
@@ -21,11 +21,11 @@ Codex Memory、rollout、thread 摘要、项目规则或其他 harness 记忆若
 - 不把候选直接标成 `confirmed` Claim，也不直接晋升 Core Summary；
 - 需要用户审核、来源引用和适用边界后，才可通过唯一回流路径 `Context Patch` 进入长期 Context。
 
-File Adapter 因此不接触 Memory API、rollout、`MEMORY.md`、Personal Store 或 App Server。它只接受一份已生成且冻结的 1.0.0 Context View。关闭 Harness Memory 时，仍可从本地 View 生成同样的 Markdown 或 JSON；适配器不依赖 Memory 是否启用。
+File Adapter 因此不接触 Memory API、rollout、`MEMORY.md`、Personal Store 或 App Server。它只接受一份已生成且冻结的 1.0.1 Context View。关闭 Harness Memory 时，仍可从本地 View 生成同样的 Markdown 或 JSON；适配器不依赖 Memory 是否启用。
 
 ## File Adapter 是第一阶段集成
 
-Brief Yourself 1.0.0 采用可审计的单向 File Adapter：
+Brief Yourself 1.0.1 采用可审计的单向 File Adapter：
 
 ```text
 冻结 Context View --validate/disclose--> 独立 Markdown 或 JSON 文件/stdout
@@ -60,7 +60,7 @@ subject + principal + audience + purpose + task
 
 ## Personal 与 Organization Context
 
-1.0.0 当前版本只实现 `subject.type=person`。未来 Organization Context 可以复用 `subject/principal/audience/purpose/revision/permission/expiry` 这组 Envelope，但必须拥有独立 Store、所有权和权限模型。本门不实施组织产品，也不把团队政策写进 Personal Context。
+1.0.1 当前版本只实现 `subject.type=person`。未来 Organization Context 可以复用 `subject/principal/audience/purpose/revision/permission/expiry` 这组 Envelope，但必须拥有独立 Store、所有权和权限模型。本门不实施组织产品，也不把团队政策写进 Personal Context。
 
 对 Team Agent 的默认策略是拒绝个人 Claim，而不是由 adapter 猜测“这个团队可能认识谁”。若未来要允许共享，必须在生成 View 时显式声明同一组 exact audience IDs、目的、权限和 TTL，并保留可审计的来源。
 

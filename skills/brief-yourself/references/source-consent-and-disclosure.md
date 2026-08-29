@@ -1,4 +1,4 @@
-# Source Consent And Disclosure｜Brief Yourself 1.0.0
+# Source Consent And Disclosure｜Brief Yourself 1.0.1
 
 本文件规定“是否可以读取”和“读到以后可以向谁、为何使用”两道不同的门。可访问不等于已授权；内容敏感也不等于披露许可。
 
@@ -55,7 +55,7 @@ Codex Memory、`MEMORY.md`、`memory_summary.md`、rollout summaries、consolida
 
 ## 5. Person / Team Agent 隔离
 
-1.0.0 当前版本只实现 `subject.type = person`。个人主体、执行者和受众都必须出现在 Context Envelope 中：`subject`、`principal`、`audience`、`purpose`、版本和 TTL 缺一不可。
+1.0.1 当前版本只实现 `subject.type = person`。个人主体、执行者和受众都必须出现在 Context Envelope 中：`subject`、`principal`、`audience`、`purpose`、版本和 TTL 缺一不可。
 
 `team-agent`、组织主体、共享频道或未识别的 principal/audience 默认拒绝个人 Context。`self-agent` 只表示个人执行者的候选角色，不能流向 `team-agent` 或任何未在 `audience[]` 中逐一获授权的其他 recipient；默认 self-agent disclosure 不得被扩大解释。当前版本没有 Team Agent 的自动放行路径；即使用户与 Agent 同属一个项目，也不能推断 team disclosure。未来若新增组织协议，必须使用独立 Store 和独立授权，不得改写本 Skill 的 person 默认拒绝。
 
