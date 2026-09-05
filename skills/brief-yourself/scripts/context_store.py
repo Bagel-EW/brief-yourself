@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Manage Brief Yourself Personal Context Stores (stdlib only).
 
-V0.4 is the canonical Store format.  V0.2 and V0.3 are deliberately kept on
+Brief Yourself 1.0.1 is the canonical Store format.  V0.2 and V0.3 are deliberately kept on
 the read-only side of this module: validate/inspect may inspect them, while
 export and mutation commands fail closed.  ``migrate-v02`` is the one
-historical exception and only creates a V0.3 Store.  V0.3 to V0.4 is a
+historical exception and only creates a V0.3 Store.  V0.3 to 1.0.1 is a
 metadata-only preview until a future, separately approved materialisation
 command exists.
 """
@@ -25,7 +25,13 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple, Union
 
-V04_SCHEMA_VERSION = "0.4"
+try:
+    from view_validation import validate_view_core
+except ModuleNotFoundError:  # pragma: no cover - supports direct file loading in tests
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from view_validation import validate_view_core
+
+V04_SCHEMA_VERSION = "1.0.1"
 V03_SCHEMA_VERSION = "0.3"
 V02_SCHEMA_VERSION = "0.2"
 SCHEMA_VERSION = V04_SCHEMA_VERSION
@@ -589,12 +595,12 @@ def require_v04(context: Dict[str, Any], operation: str) -> None:
     if version in READ_ONLY_SCHEMA_VERSIONS:
         raise StoreError(f"{operation} is unavailable for schema {version}; {read_only_preview_message(version)}")
     if version != V04_SCHEMA_VERSION:
-        raise StoreError(f"{operation} requires schema 0.4; unsupported schema_version: {version!r}")
+        raise StoreError(f"{operation} requires schema 1.0.1; unsupported schema_version: {version!r}")
 
 
 def read_only_preview_message(version: Any) -> str:
     if version == V02_SCHEMA_VERSION:
-        return "read-only: only validate/inspect are supported; export is unavailable; use explicit migrate-v02 for a V0.3 copy and never chain to V0.4"
+        return "read-only: only validate/inspect are supported; export is unavailable; use explicit migrate-v02 for a V0.3 copy and never chain to 1.0.1"
     return "read-only preview: only validate/inspect and preview-migrate-v03 are supported; export is unavailable; no legacy View/Patch is migrated or rewritten"
 
 
@@ -726,7 +732,7 @@ def validate_v04_context(context: Dict[str, Any]) -> Tuple[List[str], List[str]]
         errors.extend(f"unknown top-level field: {key}" for key in sorted(set(context) - V04_TOP_LEVEL))
         errors.extend(f"missing top-level field: {key}" for key in sorted(V04_TOP_LEVEL - set(context)))
     if context.get("schema_version") != V04_SCHEMA_VERSION:
-        errors.append("schema_version must be '0.4'")
+        errors.append("schema_version must be '1.0.1'")
     context_id = context.get("context_id")
     if not is_safe_id(context_id):
         errors.append("context_id is invalid")
@@ -826,7 +832,7 @@ def validate_evidence_index_v04(store: Path, context: Dict[str, Any]) -> List[st
     if set(evidence) != {"schema_version", "sources"}:
         errors.extend(f"evidence/index.json unknown field: {key}" for key in sorted(set(evidence) - {"schema_version", "sources"}))
     if evidence.get("schema_version") != V04_SCHEMA_VERSION:
-        errors.append("evidence/index.json.schema_version must be '0.4'")
+        errors.append("evidence/index.json.schema_version must be '1.0.1'")
     sources = evidence.get("sources")
     if not isinstance(sources, list):
         errors.append("evidence/index.json.sources must be an array")
@@ -1278,7 +1284,10 @@ def validate_v04_view(
     purpose_approved: bool = False,
     include_unreviewed: bool = False,
 ) -> Tuple[List[str], List[str]]:
-    errors: List[str] = []
+    errors: List[str] = validate_view_core(
+        view,
+        include_unreviewed=include_unreviewed,
+    )
     warnings: List[str] = []
     if not isinstance(view, dict):
         return ["view must be an object"], warnings
@@ -1286,7 +1295,7 @@ def validate_v04_view(
         errors.extend(f"unknown view field: {key}" for key in sorted(set(view) - V04_VIEW_FIELDS))
         errors.extend(f"missing view field: {key}" for key in sorted(V04_VIEW_FIELDS - set(view)))
     if view.get("schema_version") != V04_SCHEMA_VERSION:
-        errors.append("view.schema_version must be '0.4'")
+        errors.append("view.schema_version must be '1.0.1'")
     if not is_safe_id(view.get("view_id")):
         errors.append("view.view_id is invalid")
     subject = view.get("subject")
@@ -1456,7 +1465,7 @@ def validate_v04_patch(patch: Any, context: Dict[str, Any]) -> List[str]:
         errors.extend(f"unknown patch field: {key}" for key in sorted(set(patch) - V04_PATCH_FIELDS))
         errors.extend(f"missing patch field: {key}" for key in sorted(V04_PATCH_FIELDS - set(patch)))
     if patch.get("schema_version") != V04_SCHEMA_VERSION:
-        errors.append("patch.schema_version must be '0.4'")
+        errors.append("patch.schema_version must be '1.0.1'")
     if not is_safe_id(patch.get("patch_id")):
         errors.append("patch.patch_id is invalid")
     subject = patch.get("subject")
@@ -1492,7 +1501,7 @@ def validate_v04_patch(patch: Any, context: Dict[str, Any]) -> List[str]:
             errors.extend(f"{label}.{key} is not allowed" for key in sorted(set(proposal) - V04_PROPOSAL_FIELDS))
             errors.extend(f"{label}.{key} is required" for key in sorted(V04_PROPOSAL_FIELDS - set(proposal)))
         if proposal.get("action") not in PATCH_ACTIONS_V04:
-            errors.append(f"{label}.action is invalid; V0.4 does not write promote/demote")
+            errors.append(f"{label}.action is invalid; schema 1.0.1 does not write promote/demote")
         target = proposal.get("target_claim_id")
         if target is not None and not is_safe_id(target):
             errors.append(f"{label}.target_claim_id is invalid")
@@ -1620,7 +1629,7 @@ def iter_claims_for_inspect(context: Dict[str, Any]) -> Iterable[Tuple[str, Dict
 
 def derive_core_summary(context: Dict[str, Any]) -> List[Dict[str, Any]]:
     if schema_version(context) != V04_SCHEMA_VERSION:
-        raise StoreError("derive-core-summary requires schema 0.4; legacy Stores remain limited to validate/inspect and explicit migration preview")
+        raise StoreError("derive-core-summary requires schema 1.0.1; legacy Stores remain limited to validate/inspect and explicit migration preview")
     return [copy.deepcopy(claim) for _, claim in iter_v04_claims(context) if claim.get("user_status") == "confirmed" and claim.get("status") == "active" and claim.get("scope") == "cross-context" and claim.get("durability") in {"stable", "evolving"} and claim.get("kind") != "inference"]
 
 
@@ -1628,7 +1637,7 @@ def command_derive_core_summary(args: argparse.Namespace) -> Dict[str, Any]:
     store = store_path_from_arg(args.store)
     context = load_context(store)
     if schema_version(context) != V04_SCHEMA_VERSION:
-        raise StoreError("derive-core-summary requires schema 0.4; legacy Stores remain limited to validate/inspect and explicit migration preview")
+        raise StoreError("derive-core-summary requires schema 1.0.1; legacy Stores remain limited to validate/inspect and explicit migration preview")
     errors, warnings = validate_context(context, store=store)
     if schema_version(context) == V04_SCHEMA_VERSION:
         errors.extend(validate_evidence_index_v04(store, context))
@@ -1962,7 +1971,7 @@ def apply_v04_proposal(context: Dict[str, Any], proposal: Dict[str, Any]) -> str
     if action == "retire":
         existing["status"] = "retired"
         return f"retire:{target_id}"
-    raise StoreError(f"Unsupported V0.4 action: {action}")
+        raise StoreError(f"Unsupported schema 1.0.1 action: {action}")
 
 
 def confirmed_actor(args: argparse.Namespace) -> str:
@@ -2396,8 +2405,8 @@ def preview_store(store: Path | str, *, include_candidate: bool = False) -> Dict
     if context is not None and evidence is not None and context.get("schema_version") == V03_SCHEMA_VERSION:
         for key in sorted(set(context) - {"schema_version", "profile_id", "subject", "policy", "coverage", "core", "domains", "sources", "revision"}):
             report["unmapped_fields"].append(key)
-            preview_issue(report, "conflicts", "unmapped_field", key, "V0.3 field has no deterministic V0.4 target")
-            preview_issue(report, "loss_risks", "unmapped_field", key, "field would not be copied to the fixed V0.4 Store")
+            preview_issue(report, "conflicts", "unmapped_field", key, "V0.3 field has no deterministic 1.0.1 target")
+            preview_issue(report, "loss_risks", "unmapped_field", key, "field would not be copied to the fixed 1.0.1 Store")
         for key in sorted(set(evidence) - {"schema_version", "sources"}):
             path = f"evidence/index.json.{key}"
             report["unmapped_fields"].append(path)
@@ -2429,7 +2438,7 @@ def preview_store(store: Path | str, *, include_candidate: bool = False) -> Dict
                 report["warnings"].append(f"{section_name}.updated_at is retired metadata and is not migrated")
             allowed_keys = {"claims", "tensions", "unknowns"} | ({"updated_at"} if domain else set())
             for key in sorted(set(section) - allowed_keys):
-                preview_issue(report, "conflicts", "unmapped_section_field", f"{section_name}.{key}", "legacy field has no deterministic V0.4 target")
+                preview_issue(report, "conflicts", "unmapped_section_field", f"{section_name}.{key}", "legacy field has no deterministic 1.0.1 target")
                 preview_issue(report, "loss_risks", "unmapped_section_field", f"{section_name}.{key}", "legacy field would be dropped")
             for category in flat:
                 values = section.get(category, [])

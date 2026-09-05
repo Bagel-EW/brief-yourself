@@ -1,6 +1,6 @@
 # Store Operations｜Brief Yourself 1.0.1
 
-本文件是 Brief Yourself 1.0.1 的 runtime 操作手册，覆盖全部 14 个正式 V0.4 操作与 2 个迁移命令。internal schema compatibility id 仍为 `0.4`。参数以各命令的 `--help` 为最终依据。
+本文件是 Brief Yourself 1.0.1 的 runtime 操作手册，覆盖全部 14 个正式 1.0.1 操作与 2 个迁移命令。active schema identity 为 `1.0.1`。参数以各命令的 `--help` 为最终依据。
 
 ## Directory Layout
 
@@ -33,7 +33,7 @@ python scripts/context_store.py init \
 
 `init` 不覆盖已有 Store。
 
-新 Store 使用 internal schema compatibility id `0.4`。旧 `0.2` / `0.3` Store 只允许 `validate` 与 `inspect`；不得直接 `export`。`migrate-v02` 会改写传入路径，因此只能先由用户创建一个明确的副本，再对该副本显式执行：
+新 Store 使用 active schema identity `1.0.1`。旧 `0.2` / `0.3` Store 只允许 `validate` 与 `inspect`；不得直接 `export`。`migrate-v02` 会改写传入路径，因此只能先由用户创建一个明确的副本，再对该副本显式执行：
 
 ```bash
 python scripts/context_store.py migrate-v02 \
@@ -42,7 +42,7 @@ python scripts/context_store.py migrate-v02 \
   --approve
 ```
 
-迁移保留原 revision 快照、递增 revision，并记录变更；`validate` 不会静默迁移。该命令只到 `0.3`，不能链式进入 `0.4`。从 `0.3` 到 `0.4` 只能运行只读的 `preview-migrate-v03`，由用户另行审核和决定物化方式。
+迁移保留原 revision 快照、递增 revision，并记录变更；`validate` 不会静默迁移。该命令只到 `0.3`，不能链式进入 `1.0.1`。从 `0.3` 到 `1.0.1` 只能运行只读的 `preview-migrate-v03`，由用户另行审核和决定物化方式。
 
 ## Register Source
 
@@ -58,7 +58,7 @@ python scripts/context_store.py register-source \
   --approve
 ```
 
-`source.json` 的字段以 `assets/schemas/personal-context-store-v0.4.schema.json` 的 `source` 定义为准：
+`source.json` 的字段以 `assets/schemas/personal-context-store-v1.0.1.schema.json` 的 `source` 定义为准：
 
 ```json
 {
@@ -96,7 +96,7 @@ python scripts/context_store.py export \
   --output brief-export.md
 ```
 
-`inspect` 默认输出 revision、计数、ID 和待审核 Patch；指定 Claim ID 才输出该 Claim。`export` 只接受 `0.4` Store，默认只导出 `public`；加入 `private` 或 `restricted` 必须使用对应 flag。旧 Store 的未知字段不会通过 export 被带出。
+`inspect` 默认输出 revision、计数、ID 和待审核 Patch；指定 Claim ID 才输出该 Claim。`export` 只接受 `1.0.1` Store，默认只导出 `public`；加入 `private` 或 `restricted` 必须使用对应 flag。旧 Store 的未知字段不会通过 export 被带出。
 
 ## Create View
 

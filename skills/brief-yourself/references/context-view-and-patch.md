@@ -4,11 +4,11 @@ Brief Yourself 1.0.1 把 `Context View` 作为按目的编译的冻结 Context E
 
 ## 1. Frozen Context Envelope
 
-View 至少包含以下字段，字段名与 `assets/schemas/context-view-v0.4.schema.json` 对齐：
+View 至少包含以下字段，字段名与 `assets/schemas/context-view-v1.0.1.schema.json` 对齐：
 
 ```json
 {
-  "schema_version": "0.4",
+"schema_version": "1.0.1",
   "view_id": "view-001",
   "subject": {"type": "person", "id": "user-controlled-id"},
   "principal": {"type": "agent", "id": "current-agent"},
@@ -56,7 +56,7 @@ Patch 必须符合 1.0.1 当前版本的 Envelope 约束，且只允许以下四
 
 ```json
 {
-  "schema_version": "0.4",
+"schema_version": "1.0.1",
   "patch_id": "patch-001",
   "subject": {"type": "person", "id": "user-controlled-id"},
   "principal": {"type": "agent", "id": "current-agent"},

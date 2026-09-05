@@ -6,7 +6,7 @@
 
 Brief Yourself is a portable Personal Context Skill. It turns personal background into reviewable Context, compiles the minimum frozen input needed for each task, and returns new observations to the user as proposed changes.
 
-> **Release status:** `Brief Yourself 1.0.1` is the current public open-source release under the MIT License. The internal schema compatibility id remains `0.4`; it only governs protocol compatibility and historical migration, not the product version. The packaged Skill matches the repository source; a GitHub Release and tag are outside this release scope.
+> **Release status:** `Brief Yourself 1.0.1` is the current public open-source release under the MIT License. The active `schema_version` is now aligned to `1.0.1`; `0.4` remains only in historical artifacts and migration evidence. The packaged Skill matches the repository source; a GitHub Release and tag are outside this release scope.
 
 ## Eight terms to know
 

@@ -49,7 +49,7 @@ subject + principal + audience + purpose + task
 
 适配器在输出前 fail-closed 检查：
 
-1. internal schema compatibility id `schema_version=0.4`、主体为 `person`、principal 在 audience 中，purpose/task、revision、时间戳和三项 permission 均完整有效；过期 View 拒绝。
+1. active schema identity `schema_version=1.0.1`、主体为 `person`、principal 在 audience 中，purpose/task、revision、时间戳和三项 permission 均完整有效；过期 View 拒绝。
 2. 每条 Claim 都是完整对象；`disclosure.audiences` 必须逐字包含 `principal.id`，并逐字包含每个 `view.audience[].id`。不把 `self-agent`、`team-agent`、`public` 或 `*` 当作宽泛角色/通配授权；若 ID 取名为 `self-agent`，也只能匹配这个 exact ID。Team 共享必须使用冻结 schema 允许的 exact ID，而不是角色猜测。
 3. `--expected-audience type:id` 是调用方提供的可重复子集绑定：每个 expected 值必须存在于冻结 `view.audience`，调用方不必枚举全部 audience，因此它不是 audience equality/exhaustive assertion。它只验证调用方期望的子集，不改变第 2 条的完整 Envelope disclosure 检查；不能借此减少 required recipient IDs 或放宽 fail-closed 行为。
 4. `user-approved` 不是隐式通行证。因为当前 Envelope 未冻结 `purpose_approved` 字段，只有 CLI 的显式 `--purpose-approved` invocation 信号可以接受该 purpose token；此信号写进 JSON adapter metadata，不改写原 View。

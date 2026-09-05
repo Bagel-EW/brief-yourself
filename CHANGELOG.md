@@ -2,6 +2,14 @@
 
 本文件只记录正式公开版本；本地开发、私有候选和发布准备过程不进入公开 Changelog。
 
+## 1.0.1 — Schema identity alignment · 2026-09-05
+
+- Active `schema_version` is aligned with the Skill/product version: `1.0.1`.
+- Store/View/Patch schemas, templates, runtime, File Adapter, and the V0.3 migration preview now use the `1.0.1` active identity; `0.4` remains only in historical artifacts and migration evidence.
+- The public Skill directory and packaged artifact were regenerated from the canonical source.
+- Package: `82,246 bytes`, SHA-256 `8CBB56E5FE2D1039E410AB0A82DB2CDE313CBBBD99DAC522C1A23ECEE3233801`.
+- Unified acceptance: `116 tests / 0 failures / 5 Windows symlink skips`. No tag or GitHub Release was created.
+
 ## 1.0.1 — Agent executability and governance revision · 2026-08-29
 
 对外产品版本升级为 `1.0.1`；内部 schema compatibility id 仍为 `0.4`，仅用于协议兼容与历史迁移。

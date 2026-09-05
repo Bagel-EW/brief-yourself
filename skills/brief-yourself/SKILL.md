@@ -5,7 +5,7 @@ description: 通过有界访谈、来源授权和用户校准，建立并调用�
 
 # Brief Yourself 1.0.1｜Personal Context Layer
 
-Brief Yourself 1.0.1 是当前产品、Skill 入口和 Agent identity。内部 schema compatibility id 仍为 `0.4`，只用于协议兼容与历史迁移，不是产品版本。
+Brief Yourself 1.0.1 是当前产品、Skill 入口、Agent identity 和 active schema identity。当前 `schema_version` 为 `1.0.1`；历史 `0.4` 只保留在旧制品与历史说明中，不作为 active schema。
 
 ## 触发与定位
 
@@ -118,7 +118,7 @@ python scripts/context_store.py migrate-v02 --help
 python scripts/context_store.py preview-migrate-v03 --help
 ```
 
-这两个命令只服务 V0.2→V0.3 与 V0.3→V0.4 的历史迁移，不属于常规任务能力；先读 `references/migration-v0.3-to-v0.4.md`，按其预览、审核、另存与回滚边界使用。`migrate-v02` 会改写传入路径，只能对用户创建的明确副本执行；V0.3→V0.4 只允许只读预览。
+这两个命令只服务 V0.2→V0.3 与 V0.3→1.0.1 的历史迁移，不属于常规任务能力；先读 `references/migration-v0.3-to-v1.0.1.md`，按其预览、审核、另存与回滚边界使用。`migrate-v02` 会改写传入路径，只能对用户创建的明确副本执行；V0.3→1.0.1 只允许只读预览。
 
 ### C File Adapter：只接收冻结 View
 
@@ -130,7 +130,7 @@ C 包的 `scripts/adapters/codex_file_adapter.py` 是单向 File Adapter。它�
 python scripts/adapters/codex_file_adapter.py --view <view.json> --expected-purpose <purpose> --expected-task <task> --expected-principal-id <principal-id> --expected-audience type:id --allowed-use <allowed-use> --purpose-approved
 ```
 
-Adapter 输出是当前任务的 Markdown/JSON 适配结果，不是新的 Store、Memory 或回写凭据；任务结束仍只生成 pending Patch。
+Adapter 输出是当前任务的 Markdown/JSON 适配结果，不是新的 Store、Memory 或回写凭据；任务结束仍只生成 pending Patch。Markdown 紧凑输出仍保留每条 Claim 的 `user_status`、`confidence`、`status`、适用 `scope`、`evidence_refs`、`counterevidence_refs` 和非空关键时间字段；它只展示来源 ID，不展开证据原文、notes 或 source raw。未审核 Claim 会明确显示为 `review=unreviewed` / `review=unresolved`，不会被压缩成无条件确定事实。Store 与 Adapter 共用 `scripts/view_validation.py` 的无 Store View 校验内核；各自只在此基础上增加 Store 来源引用或调用方绑定检查。
 
 ## References 路由
 
@@ -141,18 +141,18 @@ Adapter 输出是当前任务的 Markdown/JSON 适配结果，不是新的 Store
 - `references/context-view-and-patch.md`：**编译 View 或审核 Patch 时读**。当前版本 Context Envelope、完整冻结对象、TTL、披露匹配、Patch 暂存与批准。
 - `references/harness-boundaries.md`：**涉及 Harness Memory 边界或 File Adapter 时读**。Harness Memory、Personal Context、Task Context 的边界，以及 File Adapter 的 envelope/disclosure 与 expected-audience 绑定规则。
 - `references/personal-context-model.md`：**需要确认 Store 结构语义时读**。Personal Context Store 的顶层实体、证据模型、View/Patch 回流边界与版本语义。
-- `references/store-operations.md`：**执行任何 runtime 命令前读**。全部 14 个 V0.4 操作与 2 个迁移命令的参数、副作用、文件系统限制、purge 边界和恢复方式。
-- `references/migration-v0.3-to-v0.4.md`：**仅在历史 V0.3→V0.4 迁移场景读**。只读、metadata-only preview 与 no-chain 迁移路由；这里的 `0.4` 仅是内部兼容标识，不是产品版本。
+- `references/store-operations.md`：**执行任何 runtime 命令前读**。全部 14 个 1.0.1 操作与 2 个迁移命令的参数、副作用、文件系统限制、purge 边界和恢复方式。
+- `references/migration-v0.3-to-v1.0.1.md`：**仅在历史 V0.3→1.0.1 迁移场景读**。只读、metadata-only preview 与 no-chain 迁移路由；旧 `0.4` 仅作为历史输入与旧制品标识保留。
 
 ## Assets 路由
 
-三份 v0.4 模板与同名 schema 配对，构造或校验对应对象时读取：
+三份 1.0.1 模板与同名 schema 配对，构造或校验对应对象时读取：
 
-- `assets/templates/personal-context-store-v0.4.json`：Store 结构基线，配合 `assets/schemas/personal-context-store-v0.4.schema.json`；`init` 后手工构造或校验 Store 时对照。
-- `assets/templates/context-view-v0.4.json`：冻结 View 结构基线，配合 `assets/schemas/context-view-v0.4.schema.json`；编译或校验 View 时对照。
-- `assets/templates/context-patch-v0.4.json`：Patch 结构基线，配合 `assets/schemas/context-patch-v0.4.schema.json`；暂存或审核 Patch 时对照。
+- `assets/templates/personal-context-store-v1.0.1.json`：Store 结构基线，配合 `assets/schemas/personal-context-store-v1.0.1.schema.json`；`init` 后手工构造或校验 Store 时对照。
+- `assets/templates/context-view-v1.0.1.json`：冻结 View 结构基线，配合 `assets/schemas/context-view-v1.0.1.schema.json`；编译或校验 View 时对照。
+- `assets/templates/context-patch-v1.0.1.json`：Patch 结构基线，配合 `assets/schemas/context-patch-v1.0.1.schema.json`；暂存或审核 Patch 时对照。
 
-历史 V0.3 模板与旧版 references 已迁出正式包，保存在项目 `archive/1.0.1-moved-out/`；它们不是当前协议的一部分，不得放回发布 ZIP。
+历史 V0.3 模板与旧版 references 已迁出正式包，保存在项目 `archive/1.0.1-moved-out/`；旧 `0.4` 制品也只在 `releases/` 中保留，不是当前协议的一部分，不得放回发布 ZIP。
 
 ## 交付与结束语
 

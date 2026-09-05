@@ -2,7 +2,7 @@
 
 ## 定位
 
-Brief Yourself 1.0.1 的 `Personal Context Store` 是个人上下文的 canonical source，不是第二套 Harness Memory。它的 internal schema compatibility id 为 `0.4`；Store 只保存用户可审核的 Claim、Tension、Unknown、来源引用、披露权限和版本信息。Codex Memory、rollout、项目文档或其他 harness memory 不会自动进入 Store；即使用户授权读取，也只能先作为候选证据。
+Brief Yourself 1.0.1 的 `Personal Context Store` 是个人上下文的 canonical source，不是第二套 Harness Memory。它的 active `schema_version` 为 `1.0.1`；Store 只保存用户可审核的 Claim、Tension、Unknown、来源引用、披露权限和版本信息。Codex Memory、rollout、项目文档或其他 harness memory 不会自动进入 Store；即使用户授权读取，也只能先作为候选证据。
 
 Store 的顶层字段固定为：
 
@@ -48,9 +48,9 @@ Claim 必须保留 `kind`、`scope`、`durability`、`confidence`、`user_status
 
 若 Store 内存在 `brief.md`，它是由 Canonical Context 派生的受控副本，不是第二事实源。它会进入 purge manifest；purge 若改变 Canonical Context，必须用 purge 后的 Context 在同一事务中重生成，不能保留已删除 Claim 的 ID 或 statement。purge 在每次 replace/write/delete 前重新核对受控路径集合、字节 hash 和文件身份；审核窗口内发现并发新增、修改或删除时直接中止，并保留并发修改。
 
-V0.3 Store 仍可用 `validate`、`inspect` 查看，但不能直接 `export`，也不能被 1.0.1 当前 runtime 原地升级。`preview-migrate-v03` 只读读取 `context.json` 与 `evidence/index.json`，在内存生成候选并输出 metadata-only report；它不物化新 Store、不改写输入，也不读取旧 View/Patch。若预览失败，继续使用原 V0.3 Store；回滚不通过从 internal schema compatibility id `0.4` 的 Store 反向重建。
+V0.3 Store 仍可用 `validate`、`inspect` 查看，但不能直接 `export`，也不能被 1.0.1 当前 runtime 原地升级。`preview-migrate-v03` 只读读取 `context.json` 与 `evidence/index.json`，在内存生成 1.0.1 候选并输出 metadata-only report；它不物化新 Store、不改写输入，也不读取旧 View/Patch。若预览失败，继续使用原 V0.3 Store；回滚不通过从旧 `0.4` 制品反向重建。
 
-V0.2 只能在副本上通过既有 `migrate-v02` 显式迁移到 V0.3，不能链式进入 internal schema compatibility id `0.4`。
+V0.2 只能在副本上通过既有 `migrate-v02` 显式迁移到 V0.3，不能链式进入 1.0.1。
 
 ## View 与 Patch 的边界
 

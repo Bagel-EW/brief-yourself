@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Render a frozen Brief Yourself V0.4 Context View for a file-based adapter.
+"""Render a frozen Brief Yourself 1.0.1 Context View for a file-based adapter.
 
 This module deliberately has no dependency on the Personal Context Store, a
 harness memory implementation, an App Server, or a network client.  It reads
@@ -27,10 +27,16 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
+try:
+    from view_validation import validate_view_core
+except ModuleNotFoundError:  # pragma: no cover - supports direct file loading in tests
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    from view_validation import validate_view_core
+
 
 ADAPTER_NAME = "brief-yourself-codex-file-adapter"
-ADAPTER_VERSION = "0.4"
-SCHEMA_VERSION = "0.4"
+ADAPTER_VERSION = "1.0.1"
+SCHEMA_VERSION = "1.0.1"
 MAX_INPUT_BYTES = 4 * 1024 * 1024
 AGENT_ENTITY_TYPE = "agent"
 SAFE_ID = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$")
@@ -453,15 +459,19 @@ def validate_view(
     include_unreviewed: bool = False,
     now: datetime | None = None,
 ) -> list[str]:
-    """Validate a frozen V0.4 View and return safe, structured error strings."""
+    """Validate a frozen 1.0.1 View and return safe, structured error strings."""
 
-    errors: list[str] = []
+    errors: list[str] = validate_view_core(
+        view,
+        include_unreviewed=include_unreviewed,
+        now=now,
+    )
     if not isinstance(view, dict):
         return ["invalid_view: input must be a JSON object"]
     _validate_object_keys(view, VIEW_FIELDS, "view", errors)
     _missing(view, VIEW_FIELDS, "view", errors)
     if view.get("schema_version") != SCHEMA_VERSION:
-        _error(errors, "invalid_schema", "schema_version must be 0.4")
+        _error(errors, "invalid_schema", "schema_version must be 1.0.1")
     _validate_id(view.get("view_id"), "view.view_id", errors)
 
     subject: dict[str, str] | None = None
@@ -698,6 +708,20 @@ def _one_line(value: Any) -> str:
     return " ".join(str(value).split())
 
 
+def _compact_refs(value: Any) -> str:
+    """Expose source IDs without exposing source titles, locators, or raw text."""
+
+    if not isinstance(value, list) or not value:
+        return "none"
+    return ",".join(f"`{_one_line(item)}`" for item in value)
+
+
+def _compact_temporal(item: Mapping[str, Any]) -> str:
+    fields = ("observed_at", "valid_from", "last_confirmed_at", "review_after", "expires_at")
+    values = [f"{field}={_one_line(item[field])}" for field in fields if item.get(field) is not None]
+    return "; ".join(values) if values else "none"
+
+
 def render_markdown(
     view: Mapping[str, Any],
     *,
@@ -737,8 +761,12 @@ def render_markdown(
     if view["claims"]:
         for claim in view["claims"]:
             lines.append(
-                f"- `{claim['id']}` [{claim['kind']}; {claim['sensitivity']}; {claim['scope']}] "
-                f"{_one_line(claim['statement'])}"
+                f"- `{claim['id']}` [{claim['kind']}; {claim['sensitivity']}; {claim['scope']}; "
+                f"review={claim['user_status']}; confidence={claim['confidence']}; status={claim['status']}] "
+                f"{_one_line(claim['statement'])} "
+                f"(evidence={_compact_refs(claim.get('evidence_refs'))}; "
+                f"counterevidence={_compact_refs(claim.get('counterevidence_refs'))}; "
+                f"time={_compact_temporal(claim)})"
             )
     else:
         lines.append("- （无）")
@@ -747,7 +775,9 @@ def render_markdown(
     if view["tensions"]:
         for tension in view["tensions"]:
             lines.append(
-                f"- `{tension['id']}`: {_one_line(tension['statement_a'])}；{_one_line(tension['statement_b'])}"
+                f"- `{tension['id']}` [review={tension['user_status']}; status={tension['status']}; "
+                f"sensitivity={tension['sensitivity']}; evidence={_compact_refs(tension.get('evidence_refs'))}]: "
+                f"{_one_line(tension['statement_a'])}；{_one_line(tension['statement_b'])}"
             )
     else:
         lines.append("- （无）")
@@ -755,7 +785,11 @@ def render_markdown(
     lines.extend(["", "## Relevant unknowns", ""])
     if view["relevant_unknowns"]:
         for unknown in view["relevant_unknowns"]:
-            lines.append(f"- `{unknown['id']}`: {_one_line(unknown['question'])}")
+            lines.append(
+                f"- `{unknown['id']}` [review={unknown['user_status']}; status={unknown['status']}; "
+                f"sensitivity={unknown['sensitivity']}; evidence={_compact_refs(unknown.get('evidence_refs'))}]: "
+                f"{_one_line(unknown['question'])}"
+            )
     else:
         lines.append("- （无）")
 
@@ -925,8 +959,8 @@ def _error_payload(
 
 
 def _build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="Adapt a frozen Brief Yourself V0.4 Context View")
-    parser.add_argument("--view", required=True, help="path to one frozen V0.4 Context View JSON")
+    parser = argparse.ArgumentParser(description="Adapt a frozen Brief Yourself 1.0.1 Context View")
+    parser.add_argument("--view", required=True, help="path to one frozen 1.0.1 Context View JSON")
     parser.add_argument("--format", dest="output_format", choices=sorted(FORMATS), default="markdown")
     parser.add_argument("--target", choices=sorted(TARGETS), default="generic")
     parser.add_argument("--output", help="optional output file; it may not be the input View")

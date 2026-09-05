@@ -6,7 +6,7 @@
 
 Brief Yourself 是一套可移植的 Personal Context Skill。它把个人背景整理成可审核的 Context，在每次任务开始前编译一份最小必要的冻结输入，并把任务中新出现的认识作为候选变更交回用户审核。
 
-> **发布状态**：`Brief Yourself 1.0.1` 是当前正式开源版本，采用 MIT License。内部 schema compatibility id 仍为 `0.4`，只用于协议兼容与历史迁移，不是产品版本。仓库内的版本包与源码保持一致；GitHub Release 与 tag 不属于本次发布范围。
+> **发布状态**：`Brief Yourself 1.0.1` 是当前正式开源版本，采用 MIT License。active `schema_version` 同步为 `1.0.1`；旧 `0.4` 只保留在历史制品与迁移证据中。仓库内的版本包与源码保持一致；GitHub Release 与 tag 不属于本次发布范围。
 
 ## 先认识 8 个词
 
