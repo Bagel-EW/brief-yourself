@@ -1971,7 +1971,7 @@ def apply_v04_proposal(context: Dict[str, Any], proposal: Dict[str, Any]) -> str
     if action == "retire":
         existing["status"] = "retired"
         return f"retire:{target_id}"
-        raise StoreError(f"Unsupported schema 1.0.1 action: {action}")
+    raise StoreError(f"Unsupported schema 1.0.1 action: {action}")
 
 
 def confirmed_actor(args: argparse.Namespace) -> str:
